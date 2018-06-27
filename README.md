@@ -108,13 +108,21 @@ You can find the inputs to the particle filter in the `data` directory.
 
 > * Map data provided by 3D Mapping Solutions GmbH.
 
-## Success Criteria
-If your particle filter passes the current grading code in the simulator (you can make sure you have the current version at any time by doing a `git pull`), then you should pass!
+## Project Code description
 
-The things the grading code is looking for are:
+The Particle Filter is implemented in src/particle_filter.cpp:
+
+1. Initialization: Particle initialization is implemented at ParticleFilter::init from line 30 to line 58.
+2. Prediction: The prediction step is implemented at ParticleFilter::prediction from line 63 to line 91.
+3. Update: This has 3 steps - tarnsformation of observations from car coordinates to map coordinates, associate the closest landark to map coordinates and calculate particles final weight. It is implemented at ParticleFilter::updateWeights from line 107 to line 174.
+
+## Simulator screens
+
+Initial screen before running the simulator
+![Screenshot](./images/initial.JPG)
+
+After implementation of particle filter
+![Screenshot](./images/particle_filter_final.JPG)
 
 
-1. **Accuracy**: your particle filter should localize vehicle position and yaw to within the values specified in the parameters `max_translation_error` and `max_yaw_error` in `src/main.cpp`.
-
-2. **Performance**: your particle filter should complete execution within the time of 100 seconds.
 
