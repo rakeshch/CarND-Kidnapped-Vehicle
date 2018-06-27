@@ -110,7 +110,7 @@ You can find the inputs to the particle filter in the `data` directory.
 
 ## Project Code description
 
-The Particle Filter is implemented in src/particle_filter.cpp:
+The Particle Filter is implemented in [src/particle_filter.cpp](./src/particle_filter.cpp):
 
 1. Initialization: Particle initialization is implemented at ParticleFilter::init from line 30 to line 58.
 2. Prediction: The prediction step is implemented at ParticleFilter::prediction from line 63 to line 91.
