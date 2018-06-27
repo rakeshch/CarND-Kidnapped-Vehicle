@@ -119,9 +119,11 @@ The Particle Filter is implemented in src/particle_filter.cpp:
 ## Simulator screens
 
 Initial screen before running the simulator
+
 ![Screenshot](./images/initial.JPG)
 
 After implementation of particle filter
+
 ![Screenshot](./images/particle_filter_final.JPG)
 
 
