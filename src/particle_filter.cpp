@@ -32,8 +32,9 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 		//initialize number of particles to use
 		num_particles = NUMBER_OF_PARTICLES;
 
+		random_device rd;
 		// Define random generator with Gaussian distribution
-		default_random_engine gen;
+		default_random_engine gen(rd());
 
 		// Create normal (Gaussian) distribution for x,y and theta.
 		normal_distribution<double> dist_x(x, std[0]);
@@ -59,8 +60,9 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 }
 
 void ParticleFilter::prediction(double delta_t, double std_pos[], double velocity, double yaw_rate) {
+	random_device rd;
 	// Define random generator with Gaussian distribution
-	default_random_engine gen;
+	default_random_engine gen(rd());
 
 	// Create normal (Gaussian) distribution for x,y and theta.
 	normal_distribution<double> dist_x(0., std_pos[0]);
@@ -102,7 +104,6 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 	//   3.33
 	//   http://planning.cs.uiuc.edu/node99.html
 
-
 	//constants to use in weight calculations
 	const double sigma_x2 = std_landmark[0] * std_landmark[0];
 	const double sigma_y2 = std_landmark[1] * std_landmark[1];
@@ -113,7 +114,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 
 	unsigned int nObservations = observations.size();
 
-	for (unsigned int i = 0; i < num_particles; ++i)
+	for (int i = 0; i < num_particles; ++i)
 	{
 		// Iterate through all the observations and find the shortest distance between each observation and the particle
 		for (unsigned int j = 0; j < nObservations; ++j)
@@ -161,14 +162,17 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 
 				// final weight of the particle will be the product of each measurement's multivariable-gaussian probability density (weight)
 				particles[i].weight *= weight;
-
-				//sum of weights to be used later, for normalization
-				sum_w += particles[i].weight;
 			}
+			else
+			{
+				particles[i].weight *= EPS;
+			}	
+			//sum of weights to be used later, for normalization
+			sum_w += particles[i].weight;
 		}
 	}
 	// Weights normalization to sum of weights=1
-	for (unsigned int l = 0; l < num_particles; ++l) {
+	for (int l = 0; l < num_particles; ++l) {
 		particles[l].weight /= sum_w;
 		weights[l] = particles[l].weight;
 	}
@@ -178,7 +182,8 @@ void ParticleFilter::resample() {
 	// Resample particles with replacement with probability proportional to their weight. 
 	// NOTE: You may find std::discrete_distribution helpful here.
 	//   http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
-	static default_random_engine gen;
+	random_device rd;
+	static default_random_engine gen(rd());
 
 	discrete_distribution<> dis_particles(weights.begin(), weights.end());
 	vector<Particle> new_particles;
@@ -186,7 +191,7 @@ void ParticleFilter::resample() {
 	for (int i = 0; i < num_particles; i++) {
 		new_particles[i] = particles[dis_particles(gen)];
 	}
-	particles = new_particles;
+	particles = move(new_particles);
 }
 
 string ParticleFilter::getAssociations(Particle best)
